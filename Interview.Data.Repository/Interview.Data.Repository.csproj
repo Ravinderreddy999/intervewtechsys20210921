@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Interview.Data.Models\Interview.Data.Models.csproj" />
+    <ProjectReference Include="..\Sparcpoint.Core\Sparcpoint.Core.csproj" />
+    <ProjectReference Include="..\Sparcpoint.SqlServer.Abstractions\Sparcpoint.SqlServer.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>
