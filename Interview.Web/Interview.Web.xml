@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Interview.Web</name>
+    </assembly>
+    <members>
+        <member name="M:Interview.Web.Controllers.ProductController.SearchProduct(Interview.Data.Models.ProductModel)">
+            <summary>
+            Search Product
+            </summary>
+            <param name="product"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Interview.Web.Controllers.ProductController.AddProduct(Interview.Data.Models.ProductModel)">
+            <summary>
+            Add Product
+            </summary>
+            <param name="product"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Interview.Web.Controllers.ProductController.AddInventory(Interview.Data.Models.InventoryTransactionModel)">
+            <summary>
+            Add Product to inventory
+            </summary>
+            <param name="product"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Interview.Web.Controllers.ProductController.RemoveProductfromInventory(Interview.Data.Models.InventoryTransactionModel)">
+            <summary>
+            Remove Product from inventory
+            </summary>
+            <param name="product"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Interview.Web.Controllers.ProductController.GetProductCount(System.Int32)">
+            <summary>
+            product Inventory count
+            </summary>
+            <param name="product"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

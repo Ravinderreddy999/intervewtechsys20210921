@@ -31,7 +31,7 @@ namespace Interview.Web.Controllers
         /// </summary>
         /// <param name="product"></param>
         /// <returns></returns>
-        [HttpPost(Name ="SearchProduct")]
+        [HttpPost("search",Name ="SearchProduct")]
         public Task<List<ProductModel>> SearchProduct([FromBody] ProductModel product)
         {
             return productReposiory.Search(product);
@@ -44,8 +44,9 @@ namespace Interview.Web.Controllers
         /// <param name="product"></param>
         /// <returns></returns>
         [HttpPost(Name = "AddProduct")]
-        public Task AddProduct([FromBody]ProductModel product)
+        public Task AddProduct([FromBody] ProductModel product)
         {
+            
             return productReposiory.Add(product);
         }
 
@@ -55,7 +56,7 @@ namespace Interview.Web.Controllers
         /// </summary>
         /// <param name="product"></param>
         /// <returns></returns>
-        [HttpPost("{productInstanceId}/Inventory",Name = "AddProductToInventory")]
+        [HttpPost("{productInstanceId}/Inventory", Name = "AddProductToInventory")]
         public Task AddInventory([FromBody] InventoryTransactionModel productInventory)
         {
             return inventoryRepository.Add(productInventory);

@@ -44,15 +44,15 @@ namespace Interview.Data.Repository
 
             return _sqlExecutor.ExecuteAsync(async (conn, trn) =>
             {
-                var p = new DynamicParameters();
-                p.Add("@Name", item.Name);
-                p.Add("@Description", item.Description);
-                p.Add("@ProductImageUris", item.ProductImageUris);
-                p.Add("@ValidSkus", item.ValidSkus);
-                p.Add("@AttributeList", attributes.AsTableValuedParameter("dbo.CustomAttributeList"));
-                p.Add("@ProductCategories", categories.AsTableValuedParameter("dbo.StringList"));
+                var param = new DynamicParameters();
+                param.Add("@Name", item.Name);
+                param.Add("@Description", item.Description);
+                param.Add("@ProductImageUris", item.ProductImageUris);
+                param.Add("@ValidSkus", item.ValidSkus);
+                param.Add("@AttributeList", attributes.AsTableValuedParameter("dbo.CustomAttributeList"));
+                param.Add("@ProductCategories", categories.AsTableValuedParameter("dbo.StringList"));
 
-                await conn.QueryAsync("dbo.ProductAdd", p, trn);
+                await conn.QueryAsync("dbo.ProductAdd", param, trn, commandType:CommandType.StoredProcedure);
             });
         }
 
@@ -100,7 +100,9 @@ namespace Interview.Data.Repository
                 attributes.Rows.Add(dr);
             });
 
-            return _sqlExecutor.ExecuteAsync(async (conn, trn) =>
+            Dictionary<int, ProductModel> prodDict = new Dictionary<int, ProductModel>();
+
+            return _sqlExecutor.ExecuteNonTran(async (conn) =>
             {
 
                 var p = new DynamicParameters();
@@ -122,8 +124,34 @@ namespace Interview.Data.Repository
                 if (product.Categories.Count>0)
                     p.Add("@ProductCategories", categories.AsTableValuedParameter("dbo.StringList"));
 
-                IEnumerable<ProductModel> result1 = await conn.QueryAsync<ProductModel>("dbo.ProductSearch", p, trn);
-                return result1.ToList();
+                IEnumerable<ProductModel> result1 = conn.Query<ProductModel,CategoryModel, ProductAttributeModel, ProductModel>("dbo.ProductSearch", 
+                    (prod,cat,attr) => {
+                        ProductModel productToAdd = new ProductModel();
+
+                        if (!prodDict.TryGetValue(prod.InstanceId, out productToAdd))
+                        {
+                            productToAdd = new ProductModel
+                            {
+                                InstanceId = prod.InstanceId,
+                                Name = prod.Name,
+                                ProductImageUris = prod.ProductImageUris,
+                                ValidSkus = prod.ValidSkus,
+                                CreateDateTime = prod.CreateDateTime,
+                                Description = prod.Description
+                            };
+
+                            prodDict.Add(prod.InstanceId, productToAdd);
+                        }
+
+                        productToAdd.Categories.Add(cat.Name);
+                        productToAdd.Attributes.Add(new ProductAttributeModel() { Key = attr.Key, Value = attr.Value });
+
+
+                        return productToAdd;
+                    },                    
+                    splitOn: "InstanceId,CatInstanceId,prodAttrInstanceId"
+                    );
+              return prodDict.Values.ToList();
             });
         }
 
